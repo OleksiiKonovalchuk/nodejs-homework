@@ -27,6 +27,11 @@ const loginSchema = Joi.object({
 		'any.required': `"password" is required`,
 	}),
 })
+const subscriptionSchema = Joi.object({
+	subscription: Joi.string()
+		.required()
+		.valid(...subscription),
+})
 const userSchema = Schema(
 	{
 		name: { type: String, required: [true, 'Type in a name'] },
@@ -50,6 +55,10 @@ const userSchema = Schema(
 			type: String,
 			default: '',
 		},
+		avatarURL: {
+			type: String,
+			required: true,
+		},
 	},
 	{ versionKey: false, timestamps: true }
 )
@@ -58,6 +67,7 @@ userSchema.post('save', handleMongooseErr)
 const schemas = {
 	registerSchema,
 	loginSchema,
+	subscriptionSchema,
 }
 const User = model('user', userSchema)
 module.exports = { User, schemas }

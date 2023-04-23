@@ -5,19 +5,17 @@ const { Contact } = require('../models/contacts')
 const listContacts = async (req, res) => {
 	const { _id: owner } = req.user
 	const { page = 1, limit = 20, favorite } = req.query
-	// console.log(favorite)
 	const skip = (page - 1) * limit
 	const result = await Contact.find({ owner }, '-createdAt -updatedAt', { skip, limit }).populate(
 		'owner',
 		'name email'
 	)
-	// const filteredContacts =
-	// 	req.query.favorite === undefined
-	// 		? result
-	// 		: await result.filter((contact) => {
-	// 				return contact.favorite === req.query.favorite
-	// 		  })
-	res.json(result)
+	const filteredContacts =
+		favorite === undefined
+			? result
+			: result.filter((contact) => contact.favorite.toString() === favorite)
+
+	res.json(filteredContacts)
 }
 const contactsListFavourite = async (req, res) => {
 	const { _id: owner } = req.user

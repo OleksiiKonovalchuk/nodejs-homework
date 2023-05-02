@@ -32,6 +32,11 @@ const subscriptionSchema = Joi.object({
 		.required()
 		.valid(...subscription),
 })
+const emailSchema = Joi.object({
+	email: Joi.string().required().min(6).pattern(emailRegxp).messages({
+		'any.required': `"email" is required`,
+	}),
+})
 const userSchema = Schema(
 	{
 		name: { type: String, required: [true, 'Type in a name'] },
@@ -59,14 +64,25 @@ const userSchema = Schema(
 			type: String,
 			required: true,
 		},
+		verify: {
+			type: Boolean,
+			default: false,
+		},
+		verificationToken: {
+			type: String,
+			default: '',
+			required: [true, 'Verify token is required'],
+		},
 	},
 	{ versionKey: false, timestamps: true }
 )
 
 userSchema.post('save', handleMongooseErr)
+
 const schemas = {
 	registerSchema,
 	loginSchema,
+	emailSchema,
 	subscriptionSchema,
 }
 const User = model('user', userSchema)
